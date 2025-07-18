@@ -1,4 +1,8 @@
 import React, { useState } from "react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Line } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -30,91 +34,107 @@ export default function App() {
   const chartOptions = {
     responsive: true,
     plugins: {
-      legend: { position: "top" },
-      title: { display: true, text: "Monthly USDC Income Trend" },
+      legend: {
+        position: "top",
+      },
+      title: {
+        display: true,
+        text: "Monthly USDC Income Trend",
+      },
     },
   };
 
-  const [activeTab, setActiveTab] = useState("dashboard");
-
   return (
-    <div className="min-h-screen bg-white text-gray-900 p-4">
+    <div className="min-h-screen bg-white text-gray-900 p-4 text-sm sm:text-base">
       <header className="text-center py-4 border-b">
-        <h1 className="text-2xl font-bold">Haro Real Estate (Demo)</h1>
-        <p className="text-sm text-red-500">Demo Only – No Real Transactions</p>
+        <h1 className="text-2xl sm:text-3xl font-bold">Haro Real Estate (Demo)</h1>
+        <p className="text-xs sm:text-sm text-red-500">Demo Only – No Real Transactions</p>
         {!walletConnected ? (
-          <button className="mt-2 px-4 py-2 bg-blue-500 text-white rounded" onClick={() => setWalletConnected(true)}>
+          <Button className="mt-2" onClick={() => setWalletConnected(true)}>
             Connect Wallet (Simulated)
-          </button>
+          </Button>
         ) : (
-          <p className="text-green-600 mt-2">Wallet Connected: 0x123...789</p>
+          <p className="text-green-600 mt-2 text-sm">Wallet Connected: 0x123...789</p>
         )}
       </header>
 
-      <main className="max-w-4xl mx-auto mt-6">
-        <div className="flex justify-around mb-4 border-b pb-2">
-          {["dashboard", "property", "buy", "wallet", "charts"].map(tab => (
-            <button
-              key={tab}
-              onClick={() => setActiveTab(tab)}
-              className={`px-4 py-2 rounded-lg hover:bg-blue-100 ${activeTab === tab ? "bg-gray-200 font-semibold" : "text-gray-600"}`}
-            >
-              {tab.charAt(0).toUpperCase() + tab.slice(1)}
-            </button>
-          ))}
-        </div>
+      <main className="max-w-5xl mx-auto mt-6 px-2 sm:px-6">
+        <Tabs defaultValue="dashboard" className="w-full">
+          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-5 gap-2">
+            <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
+            <TabsTrigger value="property">Property</TabsTrigger>
+            <TabsTrigger value="buy">Buy/Sell</TabsTrigger>
+            <TabsTrigger value="wallet">Wallet</TabsTrigger>
+            <TabsTrigger value="charts">Charts</TabsTrigger>
+          </TabsList>
 
-        {activeTab === "dashboard" && (
-          <div className="bg-white shadow-md border border-gray-200 hover:shadow-lg transition p-6 rounded-2xl shadow-md">
-            <h2 className="text-xl font-semibold mb-2">Your Portfolio</h2>
-            <p>Total RET Tokens: <strong>1,250 RET</strong></p>
-            <p>Estimated USDC Income (Monthly): <strong>85 USDC</strong></p>
-            <p>Annual Yield: <strong>8.2%</strong></p>
-          </div>
-        )}
+          <TabsContent value="dashboard">
+            <Card className="mt-4">
+              <CardContent className="space-y-4 p-4 sm:p-6">
+                <h2 className="text-lg sm:text-xl font-semibold">Your Portfolio</h2>
+                <p>Total RET Tokens: <strong>1,250 RET</strong></p>
+                <p>Estimated USDC Income (Monthly): <strong>85 USDC</strong></p>
+                <p>Annual Yield: <strong>8.2%</strong></p>
+              </CardContent>
+            </Card>
+          </TabsContent>
 
-        {activeTab === "property" && (
-          <div className="bg-white shadow-md border border-gray-200 hover:shadow-lg transition p-6 rounded-2xl shadow-md">
-            <h2 className="text-xl font-semibold mb-2">Sydney Apartment – 99 George St</h2>
-            <p>Price per Token: 50 USDC</p>
-            <p>Total Tokens: 10,000</p>
-            <p>Yield: 7.5% / year</p>
-            <p>Description: Modern 2-bedroom unit near CBD with high rental demand.</p>
-          </div>
-        )}
+          <TabsContent value="property">
+            <Card className="mt-4">
+              <CardContent className="space-y-4 p-4 sm:p-6">
+                <h2 className="text-lg sm:text-xl font-semibold">Sydney Apartment – 99 George St</h2>
+                <p>Price per Token: 50 USDC</p>
+                <p>Total Tokens: 10,000</p>
+                <p>Yield: 7.5% / year</p>
+                <p>Description: Modern 2-bedroom unit near CBD with high rental demand.</p>
+              </CardContent>
+            </Card>
+          </TabsContent>
 
-        {activeTab === "buy" && (
-          <div className="bg-white shadow-md border border-gray-200 hover:shadow-lg transition p-6 rounded-2xl shadow-md">
-            <h2 className="text-xl font-semibold mb-2">Buy RET Tokens</h2>
-            <p className="mb-2">Enter number of tokens to simulate purchase:</p>
-            <input className="border p-2 w-full max-w-sm mb-2" placeholder="e.g. 100" />
-            <button
-              className="bg-green-500 text-white px-4 py-2 rounded"
-              onClick={() => alert("Simulated purchase successful.")}
-            >
-              Simulate Purchase
-            </button>
-          </div>
-        )}
+          <TabsContent value="buy">
+            <Card className="mt-4">
+              <CardContent className="space-y-4 p-4 sm:p-6">
+                <h2 className="text-lg sm:text-xl font-semibold">Buy RET Tokens</h2>
+                <p>Enter number of tokens to simulate purchase:</p>
+                <input className="border p-2 w-full max-w-sm" placeholder="e.g. 100" />
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Button className="mt-2">Simulate Purchase</Button>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>Transaction Complete</DialogTitle>
+                    </DialogHeader>
+                    <p>Successfully simulated purchase of RET tokens.</p>
+                  </DialogContent>
+                </Dialog>
+              </CardContent>
+            </Card>
+          </TabsContent>
 
-        {activeTab === "wallet" && (
-          <div className="bg-white shadow-md border border-gray-200 hover:shadow-lg transition p-6 rounded-2xl shadow-md">
-            <h2 className="text-xl font-semibold mb-2">Wallet Summary</h2>
-            <p>USDC Balance: <strong>320 USDC</strong></p>
-            <p className="mt-2 font-semibold">Income History (simulated)</p>
-            <ul className="list-disc pl-6">
-              <li>2025-07-01: 8.50 USDC</li>
-              <li>2025-06-01: 7.90 USDC</li>
-              <li>2025-05-01: 7.50 USDC</li>
-            </ul>
-          </div>
-        )}
+          <TabsContent value="wallet">
+            <Card className="mt-4">
+              <CardContent className="space-y-4 p-4 sm:p-6">
+                <h2 className="text-lg sm:text-xl font-semibold">Wallet Summary</h2>
+                <p>USDC Balance: <strong>320 USDC</strong></p>
+                <p>Income History (simulated)</p>
+                <ul className="list-disc pl-6">
+                  <li>2025-07-01: 8.50 USDC</li>
+                  <li>2025-06-01: 7.90 USDC</li>
+                  <li>2025-05-01: 7.50 USDC</li>
+                </ul>
+              </CardContent>
+            </Card>
+          </TabsContent>
 
-        {activeTab === "charts" && (
-          <div className="bg-white p-6 rounded-2xl shadow-md">
-            <Line options={chartOptions} data={chartData} />
-          </div>
-        )}
+          <TabsContent value="charts">
+            <Card className="mt-4">
+              <CardContent className="p-4 sm:p-6">
+                <Line options={chartOptions} data={chartData} />
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
       </main>
     </div>
   );
